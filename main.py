@@ -13,6 +13,11 @@ class BasicBarrier(object):
 	def get_cameray(self, origin):
 		return self.mapy - origin
 		
+	def get_self_rect(self, origin):
+		rect = ALL_SURFACE[self.surface].get_rect()
+		rect.topleft = (self.x, self.get_cameray(origin))
+		return rect
+		
 		
 class Kangaroo(object):
 	def __init__(self):
@@ -25,6 +30,8 @@ def terminate():
 	sys.exit()
 
 def main():
+	global ALL_SURFACE
+
 	pygame.init()
 	WINWIDTH = 500
 	WINHEIGHT = 600
@@ -71,6 +78,7 @@ def main():
 	barriers = []
 	for pos in LEVEL["barriers"]:
 		barriers.append(BasicBarrier(pos["x"], pos["y"]))
+	length = LEVEL["length"]
 	
 	while True:# MAIN LOOP
 		DISPLAYSURF.fill(BGCOLOR)
@@ -94,10 +102,17 @@ def main():
 				elif event.key in (K_d, K_RIGHT):
 					rightKeyPressed = False
 					#print("rightKeyPressed = False")
+					
+		if origin < length:
+			origin += 5
+			if leftKeyPressed:
+				kangaroo.rect.left -= 5
+			if rightKeyPressed:
+				kangaroo.rect.left += 5
 				
 		DISPLAYSURF.blit(ALL_SURFACE[kangaroo.surface], kangaroo.rect)
 		for barrier in barriers:
-			DISPLAYSURF.blit(ALL_SURFACE[barrier.surface], (barrier.x, barrier.get_cameray(origin)))
+			DISPLAYSURF.blit(ALL_SURFACE[barrier.surface], barrier.get_self_rect(origin))
 		pygame.display.update()
 		
 		FPSCLOCK.tick(FPS)
