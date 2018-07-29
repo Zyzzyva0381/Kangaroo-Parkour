@@ -25,7 +25,14 @@ class Kangaroo(object):
 		self.rect = None
 	
 
-def gameOverAni():
+def drawSprites(origin):
+	DISPLAYSURF.blit(ALL_SURFACE[kangaroo.surface], kangaroo.rect)
+	for barrier in barriers:
+		DISPLAYSURF.blit(ALL_SURFACE[barrier.surface], barrier.get_self_rect(origin))
+	pygame.display.update()
+	
+def gameOverAni(origin):
+	drawSprites(origin)
 	DISPLAYSURF.blit(gameOverSurf, gameOverRect)
 	pygame.display.update()
 	while True:
@@ -33,7 +40,9 @@ def gameOverAni():
 			if event.type == QUIT:
 				terminate()
 			
-def hasWonAni():
+
+def hasWonAni(origin):
+	drawSprites(origin)
 	DISPLAYSURF.blit(hasWonSurf, hasWonRect)
 	pygame.display.update()
 	while True:
@@ -46,7 +55,7 @@ def terminate():
 	sys.exit()
 
 def main():
-	global ALL_SURFACE, hasWonSurf, hasWonRect, gameOverSurf, gameOverRect, DISPLAYSURF
+	global ALL_SURFACE, hasWonSurf, hasWonRect, gameOverSurf, gameOverRect, DISPLAYSURF, kangaroo, barriers
 
 	pygame.init()
 	WINWIDTH = 500
@@ -106,7 +115,20 @@ def main():
 	gameOverRect.center = (HALF_WINWIDTH, HALF_WINHEIGHT)
 	
 	while True:# MAIN LOOP
+		if origin < length:
+			origin += 5
+			if leftKeyPressed:
+				kangaroo.rect.left -= 5
+			if rightKeyPressed:
+				kangaroo.rect.left += 5
+			for barrier in barriers:
+				if kangaroo.rect.colliderect(barrier.get_self_rect(origin)):
+					gameOverAni(origin)
+		else:
+			hasWonAni(origin)
+	
 		DISPLAYSURF.fill(BGCOLOR)
+		drawSprites(origin)
 		
 		for event in pygame.event.get():
 			if event.type == QUIT:
@@ -127,23 +149,6 @@ def main():
 				elif event.key in (K_d, K_RIGHT):
 					rightKeyPressed = False
 					#print("rightKeyPressed = False")
-					
-		if origin < length:
-			origin += 5
-			if leftKeyPressed:
-				kangaroo.rect.left -= 5
-			if rightKeyPressed:
-				kangaroo.rect.left += 5
-			for barrier in barriers:
-				if kangaroo.rect.colliderect(barrier.get_self_rect(origin)):
-					gameOverAni()
-		else:
-			hasWonAni()
-				
-		DISPLAYSURF.blit(ALL_SURFACE[kangaroo.surface], kangaroo.rect)
-		for barrier in barriers:
-			DISPLAYSURF.blit(ALL_SURFACE[barrier.surface], barrier.get_self_rect(origin))
-		pygame.display.update()
 		
 		FPSCLOCK.tick(FPS)
 		
