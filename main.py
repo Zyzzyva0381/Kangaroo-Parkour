@@ -25,12 +25,28 @@ class Kangaroo(object):
 		self.rect = None
 	
 
+def gameOverAni():
+	DISPLAYSURF.blit(gameOverSurf, gameOverRect)
+	pygame.display.update()
+	while True:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				terminate()
+			
+def hasWonAni():
+	DISPLAYSURF.blit(hasWonSurf, hasWonRect)
+	pygame.display.update()
+	while True:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				terminate()
+	
 def terminate():
 	pygame.quit()
 	sys.exit()
 
 def main():
-	global ALL_SURFACE
+	global ALL_SURFACE, hasWonSurf, hasWonRect, gameOverSurf, gameOverRect, DISPLAYSURF
 
 	pygame.init()
 	WINWIDTH = 500
@@ -80,6 +96,15 @@ def main():
 		barriers.append(BasicBarrier(pos["x"], pos["y"]))
 	length = LEVEL["length"]
 	
+	SCREEN_SIZE = 50
+	FONT = pygame.font.Font("fonts\\console.ttf", SCREEN_SIZE)
+	hasWonSurf = FONT.render("YOU WON", True, GREEN)
+	hasWonRect = hasWonSurf.get_rect()
+	hasWonRect.center = (HALF_WINWIDTH, HALF_WINHEIGHT)
+	gameOverSurf = FONT.render("GAME OVER", True, RED)
+	gameOverRect = gameOverSurf.get_rect()
+	gameOverRect.center = (HALF_WINWIDTH, HALF_WINHEIGHT)
+	
 	while True:# MAIN LOOP
 		DISPLAYSURF.fill(BGCOLOR)
 		
@@ -109,6 +134,11 @@ def main():
 				kangaroo.rect.left -= 5
 			if rightKeyPressed:
 				kangaroo.rect.left += 5
+			for barrier in barriers:
+				if kangaroo.rect.colliderect(barrier.get_self_rect(origin)):
+					gameOverAni()
+		else:
+			hasWonAni()
 				
 		DISPLAYSURF.blit(ALL_SURFACE[kangaroo.surface], kangaroo.rect)
 		for barrier in barriers:
