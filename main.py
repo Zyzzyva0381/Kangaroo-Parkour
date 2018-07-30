@@ -25,7 +25,7 @@ class Kangaroo(object):
 		self.rect = None
 	
 
-def drawSprites(origin, showRects, barriers):
+def drawSprites(origin, showRects):
 	DISPLAYSURF.fill(BGCOLOR)
 	DISPLAYSURF.blit(ALL_SURFACE[kangaroo.surface], kangaroo.rect)
 	if showRects:
@@ -36,8 +36,8 @@ def drawSprites(origin, showRects, barriers):
 			pygame.draw.rect(DISPLAYSURF, (255, 0, 0), barrier.get_self_rect(origin), 2)
 	pygame.display.update()
 	
-def gameOverAni(origin, gameOverSurf, gameOverRect):
-	drawSprites(origin, False, barriers)
+def gameOverAni(origin):
+	drawSprites(origin, False)
 	DISPLAYSURF.blit(gameOverSurf, gameOverRect)
 	pygame.display.update()
 	while True:
@@ -46,8 +46,8 @@ def gameOverAni(origin, gameOverSurf, gameOverRect):
 				terminate()
 			
 
-def hasWonAni(origin, hasWonSurf, hasWonRect):
-	drawSprites(origin, False, barriers)
+def hasWonAni(origin):
+	drawSprites(origin, False)
 	DISPLAYSURF.blit(hasWonSurf, hasWonRect)
 	pygame.display.update()
 	while True:
@@ -60,7 +60,7 @@ def terminate():
 	sys.exit()
 
 def main():
-	global ALL_SURFACE, DISPLAYSURF, kangaroo, BGCOLOR
+	global ALL_SURFACE, hasWonSurf, hasWonRect, gameOverSurf, gameOverRect, DISPLAYSURF, kangaroo, barriers, BGCOLOR
 
 	pygame.init()
 	WINWIDTH = 500
@@ -128,11 +128,11 @@ def main():
 				kangaroo.rect.left += 5
 			for barrier in barriers:
 				if kangaroo.rect.colliderect(barrier.get_self_rect(origin)):
-					gameOverAni(origin, gameOverSurf, gameOverRect)
+					gameOverAni(origin)
 		else:
-			hasWonAni(origin, hasWonSurf, hasWonRect)
+			hasWonAni(origin)
 	
-		drawSprites(origin, False, barriers)
+		drawSprites(origin, False)
 		
 		for event in pygame.event.get():
 			if event.type == QUIT:
