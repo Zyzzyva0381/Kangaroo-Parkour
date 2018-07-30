@@ -1,3 +1,7 @@
+# Kangaroo Parkour
+# Copyright 2018 by Zhiheng Wang
+# All rights reserved. 
+
 import pygame
 import sys
 import json
