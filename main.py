@@ -25,6 +25,22 @@ class Kangaroo(object):
 		self.rect = None
 	
 
+def showStartScreen():
+	DISPLAYSURF.fill(BGCOLOR)
+	DISPLAYSURF.blit(startTextSurf, startTextRect)
+	DISPLAYSURF.blit(startButtonSurf, startButtonRect)
+	pygame.display.update()
+	while True:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				terminate()
+			elif event.type == MOUSEBUTTONUP:
+				if startButtonRect.collidepoint(event.pos):
+					return
+			elif event.type == KEYUP:
+				if event.key == K_s:
+					return
+	
 def drawSprites(origin):
 	DISPLAYSURF.fill(BGCOLOR)
 	DISPLAYSURF.blit(ALL_SURFACE[kangaroo.surface], kangaroo.rect)
@@ -60,7 +76,7 @@ def terminate():
 	sys.exit()
 
 def main():
-	global ALL_SURFACE, hasWonSurf, hasWonRect, gameOverSurf, gameOverRect, DISPLAYSURF, kangaroo, barriers, BGCOLOR, showRects
+	global ALL_SURFACE, hasWonSurf, hasWonRect, gameOverSurf, gameOverRect, DISPLAYSURF, kangaroo, barriers, BGCOLOR, showRects, startButtonSurf, startButtonRect, startTextSurf, startTextRect
 
 	pygame.init()
 	WINWIDTH = 500
@@ -126,6 +142,19 @@ def main():
 	fallingSpeedAddAmont = 1
 	fallingSpeedAddTime = 500
 	pygame.time.set_timer(USEREVENT, fallingSpeedAddTime)
+	
+	START_SCREEN_FONT_SIZE = 30
+	START_SCREEN_FONT = pygame.font.Font("fonts\\console.ttf", START_SCREEN_FONT_SIZE)
+	startTextPos = (HALF_WINWIDTH, 200)
+	startButtonPos = (HALF_WINWIDTH, 400)
+	startTextSurf = START_SCREEN_FONT.render("Kangaroo Parkour", True, BLACK)
+	startTextRect = startTextSurf.get_rect()
+	startTextRect.center = startTextPos
+	startButtonSurf = START_SCREEN_FONT.render("Start", True, BLACK, GREEN)
+	startButtonRect = startButtonSurf.get_rect()
+	startButtonRect.center = startButtonPos
+	
+	showStartScreen()
 	
 	while True:# MAIN LOOP
 		if origin < length:
