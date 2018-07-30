@@ -81,7 +81,7 @@ def main():
 	BGCOLOR = WHITE
 	
 	FPSCLOCK = pygame.time.Clock()
-	FPS = 30
+	FPS = 50
 	
 	KANGAROO_WIDTH = 100
 	KANGAROO_HEIGHT = 125
@@ -121,13 +121,19 @@ def main():
 	
 	showRects = False
 	
+	kangarooSpeed = 3
+	fallingSpeed = 3
+	fallingSpeedAddAmont = 1
+	fallingSpeedAddTime = 500
+	pygame.time.set_timer(USEREVENT, fallingSpeedAddTime)
+	
 	while True:# MAIN LOOP
 		if origin < length:
-			origin += 5
+			origin += fallingSpeed
 			if leftKeyPressed:
-				kangaroo.rect.left -= 5
+				kangaroo.rect.left -= kangarooSpeed
 			if rightKeyPressed:
-				kangaroo.rect.left += 5
+				kangaroo.rect.left += kangarooSpeed
 			for barrier in barriers:
 				if kangaroo.rect.colliderect(barrier.get_self_rect(origin)):
 					gameOverAni(origin)
@@ -155,6 +161,8 @@ def main():
 				elif event.key in (K_d, K_RIGHT):
 					rightKeyPressed = False
 					#print("rightKeyPressed = False")
+			elif event.type == USEREVENT:
+				fallingSpeed += fallingSpeedAddAmont
 		
 		FPSCLOCK.tick(FPS)
 		
