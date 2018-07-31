@@ -27,8 +27,24 @@ class Kangaroo(object):
 	def __init__(self):
 		self.surface = "KANGAROO_R"
 		self.rect = None
-	
 
+
+def showPauseScreen(origin):
+	drawSprites(origin)
+	DISPLAYSURF.blit(pauseTextSurf, pauseTextRect)
+	DISPLAYSURF.blit(contButtonSurf, contButtonRect)
+	pygame.display.update()
+	while True:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				terminate()
+			elif event.type == KEYUP:
+				if event.key == K_c:
+					return
+			elif event.type == MOUSEBUTTONUP:
+				if contButtonRect.collidepoint(event.pos):
+					return
+		
 def showStartScreen():
 	DISPLAYSURF.fill(BGCOLOR)
 	DISPLAYSURF.blit(startTextSurf, startTextRect)
@@ -45,7 +61,7 @@ def showStartScreen():
 				if event.key == K_s:
 					return
 	
-def drawSprites(origin):
+def drawSprites(origin):# without updating screen
 	DISPLAYSURF.fill(BGCOLOR)
 	DISPLAYSURF.blit(ALL_SURFACE[kangaroo.surface], kangaroo.rect)
 	if showRects:
@@ -54,7 +70,6 @@ def drawSprites(origin):
 		DISPLAYSURF.blit(ALL_SURFACE[barrier.surface], barrier.get_self_rect(origin))
 		if showRects:
 			pygame.draw.rect(DISPLAYSURF, (255, 0, 0), barrier.get_self_rect(origin), 2)
-	pygame.display.update()
 	
 def gameOverAni(origin):
 	drawSprites(origin)
@@ -80,7 +95,7 @@ def terminate():
 	sys.exit()
 
 def main():
-	global ALL_SURFACE, hasWonSurf, hasWonRect, gameOverSurf, gameOverRect, DISPLAYSURF, kangaroo, barriers, BGCOLOR, showRects, startButtonSurf, startButtonRect, startTextSurf, startTextRect
+	global ALL_SURFACE, hasWonSurf, hasWonRect, gameOverSurf, gameOverRect, DISPLAYSURF, kangaroo, barriers, BGCOLOR, showRects, startButtonSurf, startButtonRect, startTextSurf, startTextRect, pauseTextSurf, pauseTextRect, contButtonSurf, contButtonRect
 
 	pygame.init()
 	WINWIDTH = 500
@@ -101,7 +116,7 @@ def main():
 	BGCOLOR = WHITE
 	
 	FPSCLOCK = pygame.time.Clock()
-	FPS = 50
+	FPS = 60
 	
 	KANGAROO_WIDTH = 100
 	KANGAROO_HEIGHT = 125
@@ -147,16 +162,29 @@ def main():
 	fallingSpeedAddTime = 500
 	pygame.time.set_timer(USEREVENT, fallingSpeedAddTime)
 	
-	START_SCREEN_FONT_SIZE = 30
-	START_SCREEN_FONT = pygame.font.Font("fonts\\console.ttf", START_SCREEN_FONT_SIZE)
+	SCREEN_FONT_SIZE = 30
+	SCREEN_FONT = pygame.font.Font("fonts\\console.ttf", SCREEN_FONT_SIZE)
 	startTextPos = (HALF_WINWIDTH, 200)
 	startButtonPos = (HALF_WINWIDTH, 400)
-	startTextSurf = START_SCREEN_FONT.render("Kangaroo Parkour", True, BLACK)
+	startTextSurf = SCREEN_FONT.render("Kangaroo Parkour", True, BLACK)
 	startTextRect = startTextSurf.get_rect()
 	startTextRect.center = startTextPos
-	startButtonSurf = START_SCREEN_FONT.render("Start", True, BLACK, GREEN)
+	startButtonSurf = SCREEN_FONT.render("Start", True, BLACK, GREEN)
 	startButtonRect = startButtonSurf.get_rect()
 	startButtonRect.center = startButtonPos
+	
+	pauseTextPos = (HALF_WINWIDTH, 200)
+	pauseTextSurf = SCREEN_FONT.render("Game Paused", True, BLACK)
+	pauseTextRect = pauseTextSurf.get_rect()
+	pauseTextRect.center = pauseTextPos
+	contButtonPos = (HALF_WINWIDTH, 400)
+	contButtonSurf = SCREEN_FONT.render("Continue", True, BLACK, GREEN)
+	contButtonRect = contButtonSurf.get_rect()
+	contButtonRect.center = contButtonPos
+	pauseButtonPos = (0, 0)
+	pauseButtonSurf = SCREEN_FONT.render("Pause", True, BLUE, GREEN)# TODO make it transparent
+	pauseButtonRect = pauseButtonSurf.get_rect()
+	pauseButtonRect.topleft = pauseButtonPos
 	
 	showStartScreen()
 	
@@ -172,8 +200,10 @@ def main():
 					gameOverAni(origin)
 		else:
 			hasWonAni(origin)
-	
+		
 		drawSprites(origin)
+		DISPLAYSURF.blit(pauseButtonSurf, pauseButtonRect)
+		pygame.display.update()# TODO delete extra updates
 		
 		for event in pygame.event.get():
 			if event.type == QUIT:
@@ -194,8 +224,13 @@ def main():
 				elif event.key in (K_d, K_RIGHT):
 					rightKeyPressed = False
 					#print("rightKeyPressed = False")
+				elif event.key == K_p:
+					showPauseScreen(origin)
 			elif event.type == USEREVENT:
 				fallingSpeed += fallingSpeedAddAmont
+			elif event.type == MOUSEBUTTONUP:
+				if pauseButtonRect.collidepoint(event.pos):
+					showPauseScreen(origin)
 		
 		FPSCLOCK.tick(FPS)
 		
