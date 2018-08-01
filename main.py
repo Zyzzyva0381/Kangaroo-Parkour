@@ -126,9 +126,9 @@ def main():
 	KANGAROO_R = pygame.transform.scale(KANGAROO_F, (KANGAROO_WIDTH, KANGAROO_HEIGHT))
 	BASIC_BARRIER_F = pygame.image.load("sprites\\basic_barrier.png")
 	ALL_SURFACE = {
-		"KANGAROO_R" : KANGAROO_R,
-		"KANGAROO_L" : pygame.transform.flip(KANGAROO_R, True, False),
-		"BASIC_BARRIER" : pygame.transform.scale(BASIC_BARRIER_F, (BASIC_BARRIER_WIDTH, BASIC_BARRIER_HEIGHT))
+		"KANGAROO_R" : KANGAROO_R.convert(),
+		"KANGAROO_L" : pygame.transform.flip(KANGAROO_R, True, False).convert(),# TODO is it extra? 
+		"BASIC_BARRIER" : pygame.transform.scale(BASIC_BARRIER_F, (BASIC_BARRIER_WIDTH, BASIC_BARRIER_HEIGHT)).convert()
 	}
 	origin = 0
 	kangaroo = Kangaroo()
@@ -203,7 +203,7 @@ def main():
 		
 		drawSprites(origin)
 		DISPLAYSURF.blit(pauseButtonSurf, pauseButtonRect)
-		pygame.display.update()# TODO delete extra updates
+		pygame.display.update()
 		
 		for event in pygame.event.get():
 			if event.type == QUIT:
