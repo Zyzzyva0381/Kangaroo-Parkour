@@ -14,6 +14,7 @@ class MovingObstacle(object):
 		self.startPos = {"x":None, "y":None}
 		self.startPos["x"] = startPos[0]
 		self.startPos["y"] = startPos[1]
+		self.endPos = {"x":None, "y":None}
 		self.endPos["x"] = endPos[0]
 		self.endPos["y"] = endPos[1]
 		self.progress = 0 # % of moving progress
