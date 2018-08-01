@@ -8,6 +8,27 @@ import json
 from pygame.locals import *
 
 
+class MovingObstacle(object):
+	def __init__(self, startPos, endPos):
+		self.surface = "MOVING_OBSTACLE"
+		self.startPos = {"x":None, "y":None}
+		self.startPos["x"] = startPos[0]
+		self.startPos["y"] = startPos[1]
+		self.endPos["x"] = endPos[0]
+		self.endPos["y"] = endPos[1]
+		self.progress = 0 # % of moving progress
+		
+	def get_self_rect(self, origin):
+		xMoveLen = self.endPos["x"] - self.startPos["x"]
+		xPos = self.startPos["x"] + self.progress / 100 * xMoveLen
+		yMoveLen = self.endPos["y"] - self.startPos["y"]
+		yMapPos = self.startPos["y"] + self.progress / 100 * yMoveLen
+		yScrPos = yMapPos - origin
+		rect = ALL_SURFACE[self.surface].get_rect()
+		rect.topleft = (xPos, yScrPos)
+		return rect
+
+
 class BasicBarrier(object):
 	def __init__(self, x, mapy):
 		self.surface = "BASIC_BARRIER"
@@ -128,7 +149,8 @@ def main():
 	ALL_SURFACE = {
 		"KANGAROO_R" : KANGAROO_R.convert(),
 		"KANGAROO_L" : pygame.transform.flip(KANGAROO_R, True, False).convert(),# TODO is it extra? 
-		"BASIC_BARRIER" : pygame.transform.scale(BASIC_BARRIER_F, (BASIC_BARRIER_WIDTH, BASIC_BARRIER_HEIGHT)).convert()
+		"BASIC_BARRIER" : pygame.transform.scale(BASIC_BARRIER_F, (BASIC_BARRIER_WIDTH, BASIC_BARRIER_HEIGHT)).convert(),
+		"MOVING_OBSTACLE" : pygame.transform.scale(BASIC_BARRIER_F, (BASIC_BARRIER_WIDTH, BASIC_BARRIER_HEIGHT)).convert() # TODO make another one
 	}
 	origin = 0
 	kangaroo = Kangaroo()
