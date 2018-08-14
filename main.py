@@ -12,13 +12,13 @@ from pygame.locals import *
 class MovingObstacle(object):
     def __init__(self, startPos, endPos):
         self.surface = "MOVING_OBSTACLE"
-        self.startPos = {"x":None, "y":None}
+        self.startPos = {"x": None, "y": None}
         self.startPos["x"] = startPos[0]
         self.startPos["y"] = startPos[1]
-        self.endPos = {"x":None, "y":None}
+        self.endPos = {"x": None, "y": None}
         self.endPos["x"] = endPos[0]
         self.endPos["y"] = endPos[1]
-        self.progress = 0 # % of moving progress
+        self.progress = 0  # % of moving progress
 
     def get_self_rect(self, origin):
         xMoveLen = self.endPos["x"] - self.startPos["x"]
@@ -68,6 +68,7 @@ def showPauseScreen(origin):
                 if contButtonRect.collidepoint(event.pos):
                     return
 
+
 def showStartScreen():
     DISPLAYSURF.fill(BGCOLOR)
     DISPLAYSURF.blit(startTextSurf, startTextRect)
@@ -84,6 +85,7 @@ def showStartScreen():
                 if event.key == K_s:
                     return
 
+
 def drawSprites(origin):  # without updating screen
     DISPLAYSURF.fill(BGCOLOR)
     DISPLAYSURF.blit(ALL_SURFACE[kangaroo.surface], kangaroo.rect)
@@ -93,6 +95,7 @@ def drawSprites(origin):  # without updating screen
         DISPLAYSURF.blit(ALL_SURFACE[barrier.surface], barrier.get_self_rect(origin))
         if showRects:
             pygame.draw.rect(DISPLAYSURF, (255, 0, 0), barrier.get_self_rect(origin), 2)
+
 
 def gameOverAni(origin):
     drawSprites(origin)
@@ -121,9 +124,11 @@ def hasWonAni(origin):
             if event.type == QUIT:
                 terminate()
 
+
 def terminate():
     pygame.quit()
     sys.exit()
+
 
 def main():
     global ALL_SURFACE, hasWonSurf, hasWonRect, gameOverSurf, gameOverRect, DISPLAYSURF, kangaroo, barriers, BGCOLOR, showRects, startButtonSurf, startButtonRect, startTextSurf, startTextRect, pauseTextSurf, pauseTextRect, contButtonSurf, contButtonRect, gameOverWait
@@ -139,11 +144,11 @@ def main():
     leftKeyPressed = False
     rightKeyPressed = False
 
-    WHITE = (255,255,255)
-    BLACK = (0,0,0)
-    RED = (225,0,0)
-    GREEN = (0,225,0)
-    BLUE = (10,10,225)
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+    RED = (225, 0, 0)
+    GREEN = (0, 225, 0)
+    BLUE = (10, 10, 225)
     BGCOLOR = WHITE
 
     FPSCLOCK = pygame.time.Clock()
@@ -157,10 +162,12 @@ def main():
     KANGAROO_R = pygame.transform.scale(KANGAROO_F, (KANGAROO_WIDTH, KANGAROO_HEIGHT))
     BASIC_BARRIER_F = pygame.image.load("sprites\\basic_barrier.png")
     ALL_SURFACE = {
-        "KANGAROO_R" : KANGAROO_R.convert(),
-        "KANGAROO_L" : pygame.transform.flip(KANGAROO_R, True, False).convert(),# TODO is it extra?
-        "BASIC_BARRIER" : pygame.transform.scale(BASIC_BARRIER_F, (BASIC_BARRIER_WIDTH, BASIC_BARRIER_HEIGHT)).convert(),
-        "MOVING_OBSTACLE" : pygame.transform.scale(BASIC_BARRIER_F, (BASIC_BARRIER_WIDTH, BASIC_BARRIER_HEIGHT)).convert() # TODO make another one
+        "KANGAROO_R": KANGAROO_R.convert(),
+        "KANGAROO_L": pygame.transform.flip(KANGAROO_R, True, False).convert(),  # TODO is it extra?
+        "BASIC_BARRIER": pygame.transform.scale(BASIC_BARRIER_F, (BASIC_BARRIER_WIDTH, BASIC_BARRIER_HEIGHT)).convert(),
+        "MOVING_OBSTACLE": pygame.transform.scale(BASIC_BARRIER_F,
+                                                  (BASIC_BARRIER_WIDTH, BASIC_BARRIER_HEIGHT)).convert()
+        # TODO make another one
     }
     origin = 0
     kangaroo = Kangaroo()
@@ -214,7 +221,7 @@ def main():
     contButtonRect = contButtonSurf.get_rect()
     contButtonRect.center = contButtonPos
     pauseButtonPos = (0, 0)
-    pauseButtonSurf = SCREEN_FONT.render("Pause", True, BLUE, GREEN)# TODO make it transparent
+    pauseButtonSurf = SCREEN_FONT.render("Pause", True, BLUE, GREEN)  # TODO make it transparent
     pauseButtonRect = pauseButtonSurf.get_rect()
     pauseButtonRect.topleft = pauseButtonPos
 
@@ -246,18 +253,18 @@ def main():
                 if event.key in (K_a, K_LEFT):
                     kangaroo.surface = "KANGAROO_L"
                     leftKeyPressed = True
-                    #print("leftKeyPressed = True")
+                    # print("leftKeyPressed = True")
                 elif event.key in (K_d, K_RIGHT):
                     kangaroo.surface = "KANGAROO_R"
                     rightKeyPressed = True
-                    #print("rightKeyPressed = True")
+                    # print("rightKeyPressed = True")
             elif event.type == KEYUP:
                 if event.key in (K_a, K_LEFT):
                     leftKeyPressed = False
-                    #print("leftKeyPressed = False")
+                    # print("leftKeyPressed = False")
                 elif event.key in (K_d, K_RIGHT):
                     rightKeyPressed = False
-                    #print("rightKeyPressed = False")
+                    # print("rightKeyPressed = False")
                 elif event.key == K_p:
                     showPauseScreen(origin)
             elif event.type == USEREVENT:
@@ -268,5 +275,7 @@ def main():
 
         FPSCLOCK.tick(FPS)
 
+
 if __name__ == "__main__":
     main()
+    pass
